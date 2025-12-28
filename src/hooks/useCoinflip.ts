@@ -9,7 +9,7 @@ import type {
   CoinSide,
 } from '@/types';
 
-import contractAddresses from '../../contract-addresses.json';
+import contractAddresses from '../../contracts/contract-addresses.json';
 
 const CONTRACT_ADDRESS = contractAddresses.Coinflip as Address;
 const VIN_TOKEN_ADDRESS = contractAddresses.VinToken as Address;
@@ -46,7 +46,8 @@ export const useCoinflip = () => {
   const [coinSide, setCoinSide] = useState<CoinSide>('heads');
   const [isFlipping, setIsFlipping] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
-  const [lastResult, setLastResult] = useState<FlipResult |Quart null>(null);
+  // Fixed typo: was "|Quart null" → now "| null"
+  const [lastResult, setLastResult] = useState<FlipResult | null>(null);
   const [error, setError] = useState<string>('');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(loadLeaderboard());
 
@@ -171,7 +172,7 @@ export const useCoinflip = () => {
       setIsApproved(true);
       showError('Approved successfully!');
     } catch (err: any) {
-      showError(err.reason || 'Approval failed');
+      showError(err.reason || err.message || 'Approval failed');
     } finally {
       setIsApproving(false);
     }
@@ -196,7 +197,7 @@ export const useCoinflip = () => {
       }, 1500);
     } catch (err: any) {
       setIsFlipping(false);
-      showError(err.reason || 'Flip failed');
+      showError(err.reason || err.message || 'Flip failed');
     }
   };
 

@@ -157,7 +157,7 @@ function App() {
                     </button>
                   </div>
 
-                  {/* Result */}
+   
                   {lastResult && (
                     <>
                       <ResultDisplay result={lastResult} />
@@ -169,10 +169,9 @@ function App() {
             </>
           )}
 
-          {/* Leaderboard */}
+        
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-center mb-4">Top Winners</h2>
-            <Leaderboard entries={leaderboard} />
+            <Leaderboard leaderboard={leaderboard} />
           </div>
         </div>
 
@@ -183,3 +182,5 @@ function App() {
     </div>
   );
 }
+
+export default App;
