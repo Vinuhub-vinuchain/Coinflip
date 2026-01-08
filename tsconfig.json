@@ -15,8 +15,13 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+
     "baseUrl": "src",
-    "types": ["vite/client"]
+    "paths": {
+      "@/*": ["*"]
+    },
+
+    "types": ["vite/client", "jest", "@testing-library/jest-dom"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

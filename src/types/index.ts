@@ -1,22 +1,34 @@
+
+
+export type Address = `0x${string}`;
+
+export type CoinSide = 'heads' | 'tails';
+
+
+
 export interface FlipResult {
-  heads: boolean;
+  player: Address;
+  choice: boolean;        
+  result: boolean;       
   won: boolean;
   bet: string;
   payout: string;
 }
 
 export interface LeaderboardEntry {
-  player: string;
+  player: Address;
   payout: string;
   timestamp: number;
 }
 
+/* =======================
+   Optional UI State Type
+   (Not used in hook yet,
+   but safe to keep)
+======================= */
+
 export interface Web3State {
-  provider: ethers.providers.Web3Provider | null;
-  signer: ethers.Signer | null;
-  contract: ethers.Contract | null;
-  vinToken: ethers.Contract | null;
-  account: string | null;
+  account: Address | null;
   vinBalance: string;
   playerBalance: string;
   contractBalance: string;
@@ -24,7 +36,7 @@ export interface Web3State {
   connecting: boolean;
   flipping: boolean;
   approving: boolean;
-  coinSide: "heads" | "tails";
+  coinSide: CoinSide;
   choice: boolean;
   betAmount: string;
   history: FlipResult[];

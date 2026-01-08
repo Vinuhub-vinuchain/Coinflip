@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { FlipResult } from '@/types';
+import { FlipResult } from '../types/index';
 
 interface ResultDisplayProps {
   result: FlipResult | null;

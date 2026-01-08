@@ -1,14 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ethers } from 'ethers';
+
+declare module 'canvas-confetti' {
+  export default function confetti(options?: any): Promise<void>;
+}
+
 import confetti from 'canvas-confetti';
 import { loadLeaderboard, saveLeaderboard } from '@/lib/storage';
-import type {
-  Address,
-  LeaderboardEntry,
-  FlipResult,
-  CoinSide,
-} from '@/types';
-
+import type { Address, LeaderboardEntry, FlipResult, CoinSide } from '@/types';
 import contractAddresses from '../../contracts/contract-addresses.json';
 
 const CONTRACT_ADDRESS = contractAddresses.Coinflip as Address;
@@ -28,9 +27,16 @@ const VIN_ABI = [
   'function balanceOf(address) view returns (uint256)',
 ];
 
+
+declare global {
+  interface Window {
+    ethereum?: any; 
+  }
+}
+
 export const useCoinflip = () => {
   // === Core Web3 State ===
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.Signer | null>(null);
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [vinToken, setVinToken] = useState<ethers.Contract | null>(null);
@@ -42,11 +48,10 @@ export const useCoinflip = () => {
   const [contractBalance, setContractBalance] = useState<string>('0');
   const [isApproved, setIsApproved] = useState(false);
   const [betAmount, setBetAmount] = useState<string>('1');
-  const [choice, setChoice] = useState<boolean>(true); // true = heads
+  const [choice, setChoice] = useState<boolean>(true); 
   const [coinSide, setCoinSide] = useState<CoinSide>('heads');
   const [isFlipping, setIsFlipping] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
-  // Fixed typo: was "|Quart null" → now "| null"
   const [lastResult, setLastResult] = useState<FlipResult | null>(null);
   const [error, setError] = useState<string>('');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(loadLeaderboard());
@@ -79,11 +84,11 @@ export const useCoinflip = () => {
     }
 
     try {
-      const prov = new ethers.providers.Web3Provider(window.ethereum, 'any');
+      const prov = new ethers.BrowserProvider(window.ethereum);
       await prov.send('eth_requestAccounts', []);
       const network = await prov.getNetwork();
 
-      if (network.chainId !== 207) {
+      if (network.chainId !== 207n) {
         try {
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
@@ -105,8 +110,8 @@ export const useCoinflip = () => {
         }
       }
 
-      const signer = prov.getSigner();
-      const address = await signer.getAddress();
+      const signer = await prov.getSigner();
+      const address = await signer.getAddress() as Address;
       const gameContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
       const tokenContract = new ethers.Contract(VIN_TOKEN_ADDRESS, VIN_ABI, signer);
 
@@ -114,7 +119,7 @@ export const useCoinflip = () => {
       setSigner(signer);
       setContract(gameContract);
       setVinToken(tokenContract);
-      setAccount(address as Address);
+      setAccount(address);
 
       await Promise.all([updateBalances(address, gameContract, tokenContract), checkAllowance(address, tokenContract)]);
     } catch (err: any) {
@@ -135,25 +140,25 @@ export const useCoinflip = () => {
   }, []);
 
   // === Balance & Allowance ===
-  const updateBalances = async (addr: string, game: ethers.Contract, token: ethers.Contract) => {
+  const updateBalances = async (addr: Address, game: ethers.Contract, token: ethers.Contract) => {
     try {
       const [vin, win, cont] = await Promise.all([
         token.balanceOf(addr),
         game.playerBalances(addr),
         token.balanceOf(CONTRACT_ADDRESS),
       ]);
-      setVinBalance(ethers.utils.formatEther(vin));
-      setWinnings(ethers.utils.formatEther(win));
-      setContractBalance(ethers.utils.formatEther(cont));
+      setVinBalance(ethers.formatEther(vin));
+      setWinnings(ethers.formatEther(win));
+      setContractBalance(ethers.formatEther(cont));
     } catch (e) {
       console.error('Balance update failed', e);
     }
   };
 
-  const checkAllowance = async (addr: string, token: ethers.Contract) => {
+  const checkAllowance = async (addr: Address, token: ethers.Contract) => {
     try {
       const allowance = await token.allowance(addr, CONTRACT_ADDRESS);
-      const needed = ethers.utils.parseEther(betAmount || '0');
+      const needed = ethers.parseEther(betAmount || '0');
       setIsApproved(allowance.gte(needed));
     } catch (e) {
       setIsApproved(false);
@@ -166,7 +171,7 @@ export const useCoinflip = () => {
     setIsApproving(true);
     clearError();
     try {
-      const amount = ethers.utils.parseEther('1000000'); // large approval
+      const amount = ethers.parseEther('1000000'); // large approval
       const tx = await vinToken.approve(CONTRACT_ADDRESS, amount);
       await tx.wait();
       setIsApproved(true);
@@ -182,7 +187,7 @@ export const useCoinflip = () => {
   const flip = async () => {
     if (!contract || !account || !isApproved) return;
 
-    const amount = ethers.utils.parseEther(betAmount);
+    const amount = ethers.parseEther(betAmount);
     setIsFlipping(true);
     clearError();
     playSound('flip');
@@ -190,11 +195,7 @@ export const useCoinflip = () => {
     try {
       const tx = await contract.flip(choice, amount);
       await tx.wait();
-
-      // Animation while waiting for event
-      setTimeout(() => {
-        setIsFlipping(false);
-      }, 1500);
+      setTimeout(() => setIsFlipping(false), 1500);
     } catch (err: any) {
       setIsFlipping(false);
       showError(err.reason || err.message || 'Flip failed');
@@ -209,8 +210,8 @@ export const useCoinflip = () => {
       player: string,
       heads: boolean,
       won: boolean,
-      bet: ethers.BigNumber,
-      payout: ethers.BigNumber
+      bet: bigint,
+      payout: bigint
     ) => {
       if (player.toLowerCase() !== account.toLowerCase()) return;
 
@@ -219,8 +220,8 @@ export const useCoinflip = () => {
         choice,
         result: heads,
         won,
-        bet: ethers.utils.formatEther(bet),
-        payout: ethers.utils.formatEther(payout),
+        bet: ethers.formatEther(bet),
+        payout: ethers.formatEther(payout),
       };
 
       setLastResult(result);
@@ -261,19 +262,13 @@ export const useCoinflip = () => {
     };
   }, [contract, account, choice, leaderboard, vinToken]);
 
-  // === Expose Everything ===
   return {
-    // Web3
     account,
     connectWallet,
     disconnectWallet,
-
-    // Balances
     vinBalance,
     winnings,
     contractBalance,
-
-    // Game state
     betAmount,
     setBetAmount,
     choice,
@@ -282,14 +277,10 @@ export const useCoinflip = () => {
     isFlipping,
     lastResult,
     leaderboard,
-
-    // Actions
     approve,
     isApproving,
     isApproved,
     flip,
-
-    // UI
     error,
     clearError,
   };

@@ -1,13 +1,15 @@
 import { FC } from "react";
 
+export type CoinSide = "heads" | "tails";
+
 interface CoinProps {
-  coinSide: "heads" | "tails";
-  flipping: boolean;
+  side: CoinSide;
+  isFlipping: boolean;
 }
 
-export const Coin: FC<CoinProps> = ({ coinSide, flipping }) => (
+export const Coin: FC<CoinProps> = ({ side, isFlipping }) => (
   <div className="coin-container mb-6 sm:mb-8 mx-auto">
-    <div className={`coin ${flipping ? "flipping" : coinSide}`}>
+    <div className={`coin ${isFlipping ? "flipping" : side}`}>
       <div className="side heads">
         <img src="/heads.png" alt="Heads" />
       </div>

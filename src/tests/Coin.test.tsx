@@ -1,14 +1,16 @@
-import { render, screen } from "@testing-library/react";
-import { Coin } from "../src/components/Coin";
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { Coin } from '../components/Coin'; 
 
-describe("Coin", () => {
-  it("renders heads when not flipping", () => {
-    render(<Coin coinSide="heads" flipping={false} />);
-    expect(screen.getByAltText("Heads")).toBeInTheDocument();
+describe('Coin', () => {
+  it('renders heads when not flipping', () => {
+    render(<Coin side="heads" isFlipping={false} />);
+    expect(screen.getByAltText('Heads')).toBeInTheDocument();
   });
 
-  it("applies flipping class when flipping", () => {
-    render(<Coin coinSide="heads" flipping={true} />);
-    expect(screen.getByRole("img").parentElement).toHaveClass("flipping");
+  it('applies flipping class when flipping', () => {
+    render(<Coin side="heads" isFlipping={true} />);
+    const coinDiv = screen.getByAltText('Heads').parentElement?.parentElement;
+    expect(coinDiv!).toHaveClass('flipping');  
   });
 });
