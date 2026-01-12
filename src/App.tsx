@@ -150,7 +150,7 @@ function App() {
 
                   {/* Coin + Flip Button */}
                   <div className="flex flex-col items-center mb-8">
-                    oin side={coinSide} flipping={flipping} />
+                    <Coin side={coinSide} flipping={flipping} />
                     <button
                       onClick={flip}
                       disabled={isFlipping || parseFloat(betAmount) < 0.1}
