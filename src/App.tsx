@@ -33,13 +33,16 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <img src="/logo.png" alt="VinuHub" className="h-16 mx-auto mb-4 logo" />
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-            VinuHub Coinflip
-          </h1>
-          <p className="text-gray-300 mt-2">Flip fate on VinuChain – Feeless & Fair</p>
-        </div>
+<div className="mb-6 sm:mb-8 flex flex-col items-center">
+  <img 
+    src="https://photos.pinksale.finance/file/pinksale-logo-upload/1759847695513-f915ce15471ce09f03d8fbf68bc0616f.png" 
+    alt="VinuHub Logo" 
+    className="logo" 
+  />
+</div>
+<p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-center">
+  Flip fate on VinuChain – Feeless & Fair
+</p>
 
         {/* Error Message */}
         {error && (
