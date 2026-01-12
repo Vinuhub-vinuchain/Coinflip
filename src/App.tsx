@@ -1,3 +1,4 @@
+// src/App.tsx
 import { useCoinflip } from './hooks/useCoinflip';
 import { Coin } from './components/Coin';
 import { BetControls } from './components/BetControls';
@@ -33,16 +34,16 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         {/* Logo */}
-<div className="mb-6 sm:mb-8 flex flex-col items-center">
-  <img 
-    src="https://photos.pinksale.finance/file/pinksale-logo-upload/1759847695513-f915ce15471ce09f03d8fbf68bc0616f.png" 
-    alt="VinuHub Logo" 
-    className="logo" 
-  />
-</div>
-<p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-center">
-  Flip fate on VinuChain – Feeless & Fair
-</p>
+        <div className="mb-6 sm:mb-8 flex flex-col items-center">
+          <img
+            src="https://photos.pinksale.finance/file/pinksale-logo-upload/1759847695513-f915ce15471ce09f03d8fbf68bc0616f.png"
+            alt="VinuHub Logo"
+            className="logo"
+          />
+        </div>
+        <p className="text-gray-300 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-center">
+          Flip fate on VinuChain – Feeless & Fair
+        </p>
 
         {/* Error Message */}
         {error && (
@@ -56,7 +57,6 @@ function App() {
 
         {/* Main Card */}
         <div className="card backdrop-blur-xl bg-gray-800/60 border border-gray-700 rounded-3xl p-8 shadow-2xl">
-
           {/* Wallet Connection */}
           {!account ? (
             <div className="text-center">
@@ -150,7 +150,7 @@ function App() {
 
                   {/* Coin + Flip Button */}
                   <div className="flex flex-col items-center mb-8">
-                    <Coin side={coinSide} flipping={flipping} />
+                    <Coin side={coinSide} flipping={isFlipping} />
                     <button
                       onClick={flip}
                       disabled={isFlipping || parseFloat(betAmount) < 0.1}
@@ -160,7 +160,6 @@ function App() {
                     </button>
                   </div>
 
-   
                   {lastResult && (
                     <>
                       <ResultDisplay result={lastResult} />
@@ -172,7 +171,6 @@ function App() {
             </>
           )}
 
-        
           <div className="mt-12">
             <Leaderboard leaderboard={leaderboard} />
           </div>
