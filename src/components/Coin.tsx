@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 interface CoinProps {
-  coinSide: "heads" | "tails";
+  side: "heads" | "tails";
   flipping: boolean;
 }
 
