@@ -6,28 +6,32 @@ import { ShareWin } from './components/ShareWin';
 import { Leaderboard } from './components/Leaderboard';
 
 function App() {
-  const {
-    account,
-    connectWallet,
-    disconnectWallet,
-    vinBalance,
-    winnings,
-    contractBalance,
-    betAmount,
-    setBetAmount,
-    choice,
-    setChoice,
-    coinSide,
-    isFlipping,
-    lastResult,
-    leaderboard,
-    approve,
-    isApproving,
-    isApproved,
-    flip,
-    error,
-    clearError,
-  } = useCoinflip();
+const {
+  account,
+  connectWallet,
+  disconnectWallet,
+  vinBalance,
+  winnings,
+  contractBalance,
+  betAmount,
+  setBetAmount,
+  choice,
+  setChoice,
+  coinSide,
+  isFlipping,
+  lastResult,
+  leaderboard,
+  approve,
+  isApproving,
+  isApproved,
+  flip,
+  error,
+  clearError,
+  connecting, 
+  betError, 
+  withdraw,  
+  lastWin, 
+} = useCoinflip();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
