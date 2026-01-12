@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useCoinflip } from './hooks/useCoinflip';
 import { Coin } from './components/Coin';
 import { BetControls } from './components/BetControls';
