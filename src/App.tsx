@@ -153,7 +153,7 @@ return (
 
       {/* Coin - centered */}
       <div className="coin-container mb-6 sm:mb-8 mx-auto">
-        <Coin side={coinSide} flipping={isFlipping} />
+        <Coin side={coinSide} flipping={flipping} />
       </div>
 
       {/* Flip & Withdraw Buttons */}
