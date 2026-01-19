@@ -10,3 +10,4 @@ A decentralized coinflip game on VinuChain, allowing users to bet VIN tokens on 
 - Share wins to X.
 - Sound effects for flip, win, and loss (WAVs TBD).
 - Responsive UI with TailwindCSS.
+  
